@@ -98,7 +98,7 @@
     //单向链表
     class LinkNode<E>{
         E data;
-    //    下一个节点
+    //    下一个结点
         LinkNode<E> next;
         public LinkNode(E data){
             this.data=data;
@@ -127,8 +127,8 @@
     //双向链表
     class DoubleLinkNode<E>{
         E data;
-        DoubleLinkNode<E> prior;//上一个节点
-        DoubleLinkNode<E> next;//下一个节点
+        DoubleLinkNode<E> prior;//上一个结点
+        DoubleLinkNode<E> next;//下一个结点
         public DoubleLinkNode(E data){
             this.data=data;
             this.prior=null;
@@ -303,5 +303,213 @@
 
 ## 树
 
+![image-20240319145518825](E:\GitHubWorkArea\study\Arithmetic_Study\arithmetic.assets\image-20240319145518825.png)
+
+非空树的特性：
+
+- 树是n个结点的有限集合，n=0；
+- 有且仅有一个特点结点的称为根的结点。
+
+结点之间的描述：
+
+- 祖先结点：父结点以上的都称为祖先结点；
+- 子孙结点：子结点一下的都是子孙结点；
+- 双亲结点（父结点）：字面意思；
+- 孩子结点（子结点）：字面意思；
+- 兄弟结点：同意父结点下的同一层；
+- 堂兄弟结点：不同父结点但同祖先结点的同一层结点；
+
+树属性的描述：
+
+- 结点的层次：从头结点往最下的数找到最大的便是（树的高度）层数，该节点在第几层便是第几层；
+- 结点的高度：从最下的结点层数往上数，数到头节点便是节点的高度；
+- 树的高度：从头结点往最下的数找到最大的便是（树的高度）层数；
+- 结点的度：该结点有多少个子节点，不算孙结点；
+- 树的度：在数中取结点的度最大的作为树的度；
+
+### 完全二叉树
+
+- 顺序存储
+
+  - 定及基本操作：
+
+    ```java
+    //完全二叉树的顺序存储
+    class CompleteBinaryTree<E>{
+        private E[] data;
+        private int size;
+    
+        public  CompleteBinaryTree(int size)   {
+            if((size-1)%2!=0){
+                throw  new IllegalArgumentException("大小不合理");
+            }
+            data = (E[]) new Object[size];
+        }
+        public  CompleteBinaryTree(Integer tier) {
+            int max_size=0;
+            if(tier==1){
+                max_size=tier;
+            }
+            if(tier>1){
+                for(int i=0;i<tier;i++){
+                    int x=1;
+                    for(int j=0;j<i;j++){
+                        x*=2;
+                    }
+                    max_size+=x;
+                }
+            }
+            data = (E[]) new Object[max_size];
+        }
+    //    按层次顺序插入
+        public void insert(E data) throws Exception {
+            if(this.size<this.data.length){
+                this.data[this.size]=data;
+                this.size++;
+            }else {
+                throw new Exception("已满");
+            }
+        }
+    
+    }
+    ```
+
+    
+
+- 链式存储
+
+
+
+​	
+
 ## 图
+
+## 算法例题
+
+### 1【蓝桥杯题库 2414.滑行】![image-20240317202054798](E:\GitHubWorkArea\study\Arithmetic_Study\arithmetic.assets\image-20240317202054798.png)
+
+![image-20240317202212441](E:\GitHubWorkArea\study\Arithmetic_Study\arithmetic.assets\image-20240317202212441.png)
+
+```Java
+
+import java.util.Scanner;
+import java.util.HashSet;
+// 1:无需package
+// 2: 类名必须Main, 不可修改
+
+public class Main {
+    static int sum=-1;
+    static int[][] bj;
+    static int[][] f;
+
+    public static void main(String[] args) {
+        
+        Scanner scan = new Scanner(System.in);
+        //在此输入您的代码...
+        int n = scan.nextInt();
+        int m = scan.nextInt();
+        int[][] arrh= new int[n][m];
+        f= new int[n][m];
+        bj= new int[n][m];
+
+        for(int h=0;h<n;h++){
+            for(int w=0;w<m;w++){
+                arrh[h][w]=scan.nextInt();
+            }
+        }
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+
+                sum = Math.max(sum,dfs(arrh,j,i,n,m,1));
+            }
+        }
+        scan.close();
+        System.out.println(sum);
+        
+    }
+    //dfa深度搜索+记忆搜索
+    public static int dfs(int[][] arrh,int x,int y,int n,int m ,int step){
+            if(bj[y][x]==1){
+                return f[y][x];
+            }
+            bj[y][x]=1;
+            f[y][x]=1;
+            //右
+            if(x+1>=0 && x+1<m && arrh[y][x]>arrh[y][x+1] ){
+                f[y][x]=Math.max(f[y][x],dfs(arrh,x+1,y,n,m,step+1)+1);
+            }
+            //下
+            if(y+1>=0 && y+1<n && arrh[y][x]>arrh[y+1][x] ){
+                f[y][x]=Math.max(f[y][x],dfs(arrh,x,y+1,n,m,step+1)+1);
+            }
+            //左
+            if(x-1>=0  && x-1<m && arrh[y][x]>arrh[y][x-1] ){
+                f[y][x]=Math.max(f[y][x],dfs(arrh,x-1,y,n,m,step+1)+1);
+            }
+            //上
+            if(y-1>=0 && y-1<n && arrh[y][x]>arrh[y-1][x] ){
+                f[y][x]=Math.max(f[y][x],dfs(arrh,x,y-1,n,m,step+1)+1);
+            }
+
+
+        return f[y][x];
+
+    }
+}
+```
+
+
+
+### 2【力扣 [200. 岛屿数量](https://leetcode.cn/problems/number-of-islands/)】
+
+![](E:\GitHubWorkArea\study\Arithmetic_Study\arithmetic.assets\image-20240317233053279.png)![image-20240317233116403](E:\GitHubWorkArea\study\Arithmetic_Study\arithmetic.assets\image-20240317233116403.png)
+
+![image-20240317233139864](E:\GitHubWorkArea\study\Arithmetic_Study\arithmetic.assets\image-20240317233139864.png)
+
+```Java
+class Solution {
+    static boolean[][] v;
+    public int numIslands(char[][] grid) {
+        int r=grid.length,c=grid[0].length,sum=0;
+        v=new boolean[r][c];
+        for(int i=0;i<r;i++){
+            for(int j=0;j<c;j++){
+                boolean dfs = dfs(grid, i, j, r, c);
+                if(dfs){
+                    sum++;
+                }
+            }
+        }
+        return sum;
+
+    }
+    public boolean dfs(char[][] grid,int y,int x,int r,int c){
+        //判断当前坐标是否被访问
+        if(!(grid[y][x]=='1') || v[y][x]){
+            return false;
+        }
+        //为被访问则将状态设置成以访问
+        v[y][x]=true;
+        //判断能否往右访问
+        if(x+1<c && !v[y][x+1] && grid[y][x+1]=='1'){
+                dfs(grid, y, x + 1, r, c);
+        }
+        //判断能否往下访问
+        if(y+1<r && !v[y+1][x] && grid[y+1][x]=='1'){
+            dfs(grid, y + 1, x, r, c);
+        }
+        //判断能否往左访问
+        if(x-1>=0 && !v[y][x-1] && grid[y][x-1]=='1'){
+            dfs(grid, y, x - 1, r, c);
+
+        }
+        //判断能否往上访问
+        if(y-1>=0 && !v[y-1][x] && grid[y-1][x]=='1'){
+            dfs(grid, y - 1, x, r, c);
+
+        }
+        return v[y][x];
+    }
+}
+```
 
