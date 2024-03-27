@@ -507,8 +507,59 @@ class Solution {
         if(y-1>=0 && !v[y-1][x] && grid[y-1][x]=='1'){
             dfs(grid, y - 1, x, r, c);
 
-        }
+ 
+       }
         return v[y][x];
+    }
+}
+```
+
+### 3【力扣[46. 全排列](https://leetcode.cn/problems/permutations/)】
+
+![image-20240327173413848](E:\GitHubWorkArea\study\Arithmetic_Study\arithmetic.assets\image-20240327173413848.png)
+
+思路：实质就是两数交换
+
+```java
+class Solution {
+    List<List<Integer>> list;
+    public List<List<Integer>> permute(int[] nums) {
+         list= new ArrayList<>();
+        
+        int len=nums.length;
+        //p为一个递归函数，用于全排列
+        p(nums,0,len);
+        return list;
+    }
+            //p为一个递归函数，用于全排列，参数为数组，左指针，右指针
+    public void p(int[] nums ,int l,int r){
+        //当左右指针相等时，处理结果
+        if(l==r){
+            List<Integer> list1 =new ArrayList<>();
+            for(int item:nums){
+                list1.add(item);
+            }
+            list.add(list1);
+        }else {
+            
+            for (int i=l;i<r;i++){
+               //用于交换
+               //每一次遍历，i都会往后一位，然后与当前的l进行交换，相当于【1-1，1-2，1-3，1-4...1-n】每对数进行交换
+                swap(nums,l,i);
+                //当交换后左指针+1，在内部进行下一位数与i进行交换，因为i=l，所以i也+1
+                //相当于【2-2，2-3，2-4...2-n】每对数进行交换
+                p(nums,l+1,r);
+                //用于复原
+                swap(nums,l,i);
+            }
+        }
+
+    }
+    public void swap(int[] nums,int i,int r){
+        int temp=0;
+        temp = nums[i];
+        nums[i]=nums[r];
+        nums[r]=temp;
     }
 }
 ```
